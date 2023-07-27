@@ -9,8 +9,8 @@ An index.php file is located in the www folder so you can easily check the Lamp 
 
 
 ## How it works?
-The Webserver port on the host is 80 (standard) => http://localhost
-The PHPMyAdmin is accessible with http://localhost:1200
+- The Webserver port on the host is 80 (standard) => http://localhost
+- The PHPMyAdmin is accessible with http://localhost:1200
 
 
 ## Useful commands
