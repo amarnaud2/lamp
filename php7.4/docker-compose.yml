@@ -1,0 +1,63 @@
+version: "3.9"
+
+services: 
+  db:
+    image: mariadb:latest
+    container_name: db_lamp
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./backups:/backups
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER} 
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - lamp
+
+  web:
+    image: php:7.4-apache
+    container_name: apache2
+    restart: always
+    depends_on:
+      - db
+    ports: 
+      - "80:80"
+    links: 
+      - "db:db"
+    volumes:
+      - './www:/var/www/html'
+    environment:
+      MYSQL_DB_HOST: db
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}  
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      PMA_HOST: db
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - lamp
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    depends_on: 
+      - db
+    ports: 
+      - "1200:80"
+    links: 
+      - "db:db"
+    environment:
+      MYSQL_DB_HOST: db
+      MYSQL_USER: ${MYSQL_USER} 
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD} 
+    networks:
+      - lamp
+      
+
+volumes:
+  db_data: {}
+networks:
+    lamp:
