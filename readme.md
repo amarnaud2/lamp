@@ -31,3 +31,14 @@ To start the Lamp stack:
 ~~~bash:
 $> docker volume prune
 ~~~
+
+## Common errors
+### This PHP doesn't load any modules !
+Yes! This is true. I got the experience while I was trying to test a Wordpress website locally. 
+The php:x.y-apache (with x.y major and minor version numbers) image is coming with Apache2 and PHP only. Then if you try to connect a database or resize an image, you'll get a beautiful error message. 
+That's why I added an apache folder with a Dockerfile which provides an Apache2 server with PHP and some required modules already installed. In fact, this version is inspired from the official wordpress Dockerfile image. 
+I created it only in the __php8.2__ folder and I updated the docker-compose.yml accordingly.
+
+### PHPMyAdmin refuses to import my SQL dump
+There is a limitation concerning the Post request size. I added the __'UPLOAD_LIMIT: 300M'__ parameter for the phpmyadmin part of the docker-compose.yml file. This parameter is in comment but you can uncomment it if you encounter this kind of error while trying to import your (hume) dump file. 
+
