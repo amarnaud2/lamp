@@ -18,7 +18,10 @@ services:
       - lamp
 
   web:
-    image: php:8.2-apache
+ #  image: php:8.2-apache # PHP with no additional libraries
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
     container_name: apache2
     restart: always
     depends_on:
