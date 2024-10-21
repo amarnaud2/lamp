@@ -1,0 +1,60 @@
+version: "3.9"
+
+services: 
+  db:
+    image: mysql:latest
+    platform: linux/amd64
+    container_name: db_mysql
+    restart: always
+    volumes:
+      - db_data:/var/lib/mysql
+    environment:
+      #MYSQL_DATABASE: ${MYSQL_DATABASE}
+      #MYSQL_USER: ${MYSQL_USER} 
+      #MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ALLOW_EMPTY_PASSWORD: ${MYSQL_ALLOW_EMPTY_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - lamp
+
+  web:
+ #  image: php:8.2-apache # PHP with no additional libraries
+    build:
+      context: ./apache
+      dockerfile: Dockerfile
+    container_name: apache2
+    hostname: 127.0.0.1
+    restart: always
+    depends_on:
+      - db
+    ports: 
+      - "80:80"
+    volumes:
+      - './www:/var/www/html'
+    environment:
+      TZ: 'Europe/Paris'
+    networks:
+      - lamp
+
+  phpmyadmin:
+    image: phpmyadmin:5-apache
+    platform: linux/amd64
+    container_name: phpmyadmin
+    hostname: 127.0.0.1
+    restart: always
+    depends_on: 
+      - db
+    ports: 
+      - "1200:80"
+    environment:
+      PMA_HOST: db_mysql
+      TZ: 'Europe/Paris'
+    #  UPLOAD_LIMIT: 300M # Uncomment this line if you have some error message concerning Post size limitation.
+    networks:
+      - lamp
+      
+
+volumes:
+  db_data: {}
+networks:
+    lamp:

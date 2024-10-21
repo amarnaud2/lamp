@@ -23,7 +23,7 @@ $> docker-compose up -d
 
 To stop the Lamp stack: 
 ~~~bash:
-$> docker-compose down 
+$> docker-compose down -v
 ~~~
 
 To clean volumes: 
